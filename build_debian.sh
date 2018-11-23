@@ -340,6 +340,10 @@ sudo https_proxy=$https_proxy LANG=C chroot $FILESYSTEM_ROOT pip install 'docker
 ## Create /var/run/redis folder for docker-database to mount
 sudo mkdir -p $FILESYSTEM_ROOT/var/run/redis
 
+## Create /var/agentx folder for snmp agentx
+sudo mkdir -p $FILESYSTEM_ROOT/var/agentx
+sudo chmod 755 $FILESYSTEM_ROOT/var/agentx
+
 ## Config DHCP for eth0
 sudo tee -a $FILESYSTEM_ROOT/etc/network/interfaces > /dev/null <<EOF
 

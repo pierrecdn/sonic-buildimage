@@ -17,7 +17,7 @@ $(addprefix $(DEST)/, $(MAIN_TARGET)): $(DEST)/% :
 
 	# make a dist tarball
 	./bootstrap.sh
-	./configure
+	./configure --enable-snmp=agentx
 	make dist
 
 	# Create backports debian sources
