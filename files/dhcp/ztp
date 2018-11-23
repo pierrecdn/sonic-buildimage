@@ -1,0 +1,28 @@
+fetch_and_reload() {
+    if ! echo "${1}" | egrep '^(https?|ftp|file)://[-A-Za-z0-9\+&@#/%?=~_|!:,.;]*[-A-Za-z0-9\+&@#/%=~_|]$'; then
+        echo "Not a valid URL: ${1}"
+        exit 1
+    fi
+
+    if [ -f /etc/sonic/config_db.json ]; then
+        cp /etc/sonic/config_db.json /etc/sonic/config_db.json-$(date +%F)
+    fi
+
+    for i in $(seq 5); do
+        if curl "${1}" --output /etc/sonic/config_db.json --connect-timeout 15 --fail; then
+            PATH=/usr/local/bin:${PATH}
+            config reload --yes
+            break
+        else
+            sleep 5
+        fi
+    done
+}
+
+case ${reason} in
+    BOUND|RENEW|REBIND|REBOOT)
+        if [ -n "${new_configdb_url}" ]; then
+            fetch_and_reload "${new_configdb_url}"
+        fi
+        ;;
+esac
